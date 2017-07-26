@@ -1,8 +1,8 @@
 # PaperID3413
 Critical Points Of An Autoencoder Can Provably Recover Sparsely Used Overcomplete Dictionaries
 
-Datagen.m -> This code generates data for the  simulation.
-simu5.m -> This code does the simulation.
+- Datagen.m -> This code generates data for the  simulation.
+- simu5.m -> This code does the simulation.
 
 To perform a simulation, first run Datagen.m code and then run simu5.m.
 
@@ -28,17 +28,17 @@ To perform a simulation, first run Datagen.m code and then run simu5.m.
 - Plot this expected error on the test vectors as a function of p as you increase it and then vary say h too in more iterations of the experiment. 
 
 
-n = 100
-h = 256
-mu = 2.998
-zie = 0.2172
-p = 0.1586
-support, s = 2.4096
+- n = 100
+- h = 256
+- mu = 2.998
+- zie = 0.2172
+- p = 0.1586
+- support, s = 2.4096
 
-y = A_star * x_star
-x_star belongs to dimension h
-y belongs to dimension n
+- y = A_star * x_star
+- x_star belongs to dimension h
+- y belongs to dimension n
 
-h^-zie = mu_by_root_n = max|<A_i, A_j>|
-p < {zie/2,1/3}
-|s| <= h^p
+- h^-zie = mu_by_root_n = max|<A_i, A_j>|
+- p < {zie/2,1/3}
+- |s| <= h^p
