@@ -1,14 +1,10 @@
 % system parameters
-N = size(Y_mat,2); % number of data points
-h = size(X_mat,1); % hidden layer size, sparse code dimension
+N = size(Y_mat,2); % number of data points, 7000
+h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
 eta = 0.003; % learning rate
-S = 4; % support size
+S = 4; % support size   
 
-g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
-% randomly initialised  weight matrix
-W = zeros(size(X_mat,1),size(Y_mat,1));    
-
-% defining lambda 1
+% defining lambda 1 and labda 2, regularization parameters
 delta = 0.95; % used in loss function
 epsilon_i = 1/2*abs(m_1)*S*(delta+mu_by_root_n); % epsilon in theorm 3.1
 C = (1 - delta)^2;  % remark, after theorm 3.2
@@ -19,7 +15,13 @@ term_l1_2 = h*q_i*(1 - delta)^2; % 3.2 proposed gradient, term for lambda 1
 lambda_1 = term_l1_1 + term_l1_2;% 3.2 proposed gradient, lambda 1
 lambda_2 = -1; % 3.2 proposed gradient, lambda 1
 
+% it will store ...
+g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
+ 
+
 % creating a randomly initialised  weight matrix
+% this weight matrix will be in the columnwise ball distance of A_star
+W = zeros(size(X_mat,1),size(Y_mat,1)); % weight matrix
 var_weight = 1; 
 W_T = W';
 ball_distance = 2;
@@ -48,15 +50,17 @@ for i =1:size(X_mat,1)
 end
 
 
-gradient_val = [];
+% gradient_val = [];
 gmat_val = [];
-num_iter = 15;
+num_iter = 15; % number of iterations to run the simulation
+% W_diff2 stores columnwise difference between A_star and 
+% converged weight matrix at every iteration
 W_diff2 = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
     iter
-    g_mat = zeros(size(X_mat,1),size(Y_mat,1));
+    g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
     for i= 1:S
-        final_term =zeros(size(Y_mat,1),1);
+        final_term =zeros(size(Y_mat,1),1); % differentiation term of loss 1
         regularization_term_2= zeros(size(Y_mat,1),1);
         W_T = W';
         if(i<=S)
@@ -74,9 +78,11 @@ for iter =1:num_iter
                 term_prod_ab = term12 * termjh_chy;
                 final_term = final_term + term_prod_ab;
             end
-            final_term = (1/N)*final_term;
-        end 
-        regularization_term_1  = 2*lambda_1*W_T(:,i);
+            final_term = (1/N)*final_term; % taking expectation of the first loss term
+        end % end if 
+        regularization_term_1  = lambda_1*W_T(:,i);% first regularization term
+        % summing the regularization term 2 over all data points since it contains
+        % a y term 
         for k=1:N
             W_tilda = zeros(size(X_mat,1),size(Y_mat,1)); 
             W_tilda(1:4,:) = W(1:4,:);
@@ -85,38 +91,42 @@ for iter =1:num_iter
             fnorm = 0;
             for i1 =1:4
                 w1 = W_tilda(i1,:);
-                rownorm=sum(W1.^2,1);
+                rownorm=sum(W1.^2,1); % error location
                 fnorm = fnorm+ rownorm;
             end
             term_ab = lambda_2*fnorm*W_T(:,i)'*Y_mat(:,k)*Y_mat(:,k);
             regularization_term_2 = regularization_term_2+term_aa+ term_ab;
         end
-        regularization_term_2 = (1/N)*regularization_term_2;
-        g_i = final_term + regularization_term_1 + regularization_term_2;
-        g_mat(i,:) = g_i';
+        regularization_term_2 = (1/N)*regularization_term_2; % second regularization term
+        % gradient of ith column of w transpose
+        g_i = final_term + regularization_term_1 + regularization_term_2; 
+        g_mat(i,:) = g_i'; % taking transpose to get gradient of ith row of W
         colnorm=sqrt(sum(g_i.^2,1));
-        if(i == 1)
-            gradient_val = [gradient_val colnorm];
-        end
+%         if(i == 1)
+%             gradient_val = [gradient_val colnorm];
+%         end
         
-        % break if gradient has become 100 times smaller
-        if(gradient_val(1,iter)/gradient_val(1,1)<0.01) 
-            break;
-        end        
-    end
-    % break if gradient has become 100 times smaller
-    if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
-            break;
-    end  
+%         % break if gradient has become 100 times smaller
+%         if(gradient_val(1,iter)/gradient_val(1,1)<0.01) 
+%             break;
+%         end      
+
+    end % end for ifrom 1 to s
+    
+%     % break if gradient has become 100 times smaller
+%     if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
+%             break;
+%    end  
+
     gmat_val = [gmat_val sqrt(diag(g_mat*g_mat'))];
-    W = W-eta*g_mat;
-    W_T = W';
+    W = W-eta*g_mat; % updating W matrix
+    W_T = W'; % reassigning W transpose
     for i =1:size(X_mat,1)
         W1 = W_T(:,i) - A_star(:,i);
         colnorm=sqrt(sum(W1.^2,1));
         W_diff2(i,iter) = colnorm;
    end
-end
+end % end num iter 
 
 % difference between the y value obtained from 
 % converged weight matrix before normalization
