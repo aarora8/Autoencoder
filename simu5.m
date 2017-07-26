@@ -1,42 +1,52 @@
-N = size(Y_mat,2);
-h = size(X_mat,1);
-eta = 0.003; 
-delta = 0.8;
-epsilon_i = abs(m_1)*S*(delta+mu_by_root_n);
-lambda_2 = -1;
-C = (1 - delta)^2;
-S = 4;
+% system parameters
+N = size(Y_mat,2); % number of data points
+h = size(X_mat,1); % hidden layer size, sparse code dimension
+eta = 0.003; % learning rate
+S = 4; % sparsity value
 
-q_i = S/h;
-q_j = S/h;
-term_l1_1 = C*h*S;
-term_l1_2 = h*q_i*(1 - delta)^2;
-lambda_1 = term_l1_1 + term_l1_2;
-g_mat = zeros(size(X_mat,1),size(Y_mat,1)); 
-W = zeros(size(X_mat,1),size(Y_mat,1)); 
+g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
+% randomly initialised  weight matrix
+W = zeros(size(X_mat,1),size(Y_mat,1));    
 
-var_x_star = 1;
+% defining lambda 1
+delta = 0.95; % used in loss function
+epsilon_i = 1/2*abs(m_1)*S*(delta+mu_by_root_n); % epsilon in theorm 3.1
+C = (1 - delta)^2;  % remark, after theorm 3.2
+
+q_i = S/h; % sparsity probability  
+term_l1_1 = C*h*S; % 3.2 proposed gradient, term for lambda 1
+term_l1_2 = h*q_i*(1 - delta)^2; % 3.2 proposed gradient, term for lambda 1
+lambda_1 = term_l1_1 + term_l1_2;% 3.2 proposed gradient, lambda 1
+lambda_2 = -1; % 3.2 proposed gradient, lambda 1
+
+% creating a randomly initialised  weight matrix
+var_weight = 1; 
 W_T = W';
-% W_tilda = zeros(size(X_mat,1),size(Y_mat,1)); 
-% W_tilda = W(:,1:4);
-% W*y - epsilon_i;
+ball_distance = 2;
 for i =1:size(X_mat,1)
-    W1 = normrnd(0,var_x_star,[size(Y_mat,1),1]);
+    W1 = normrnd(0,var_weight,[size(Y_mat,1),1]);
     colnorm=sqrt(sum(W1.^2,1));
-    W1 = (2)*W1./colnorm;
+    W1 = (ball_distance)*W1./colnorm;
     W_T(:,i) = A_star(:,i) - W1;
 end
-
 W = W_T';
+
+% difference between the y value obtained from 
+% randomly initialised  weight matrix
+% and actual y vlue obtained from A and X
 diff = W'*X_test(:,1) - A_star*X_test(:,1);
 diff_norm = norm(diff,2);
 
+% X_mat is defined in data generation
+% W_diff is columnwise difference between A_star and 
+% randomly initialised  weight matrix
 W_diff = zeros(size(X_mat,1),1);
 for i =1:size(X_mat,1)
     W1 = W_T(:,i) - A_star(:,i);
     colnorm=sqrt(sum(W1.^2,1));
     W_diff(i,1) = colnorm;
 end
+
 
 gradient_val = [];
 gmat_val = [];
@@ -89,10 +99,12 @@ for iter =1:num_iter
             gradient_val = [gradient_val colnorm];
         end
         
-        if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
+        % break if gradient has become 100 times smaller
+        if(gradient_val(1,iter)/gradient_val(1,1)<0.01) 
             break;
         end        
     end
+    % break if gradient has become 100 times smaller
     if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
             break;
     end  
