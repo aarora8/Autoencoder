@@ -2,7 +2,7 @@
 N = size(Y_mat,2); % number of data points
 h = size(X_mat,1); % hidden layer size, sparse code dimension
 eta = 0.003; % learning rate
-S = 4; % sparsity value
+S = 4; % support size
 
 g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
 % randomly initialised  weight matrix
