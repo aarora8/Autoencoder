@@ -33,9 +33,9 @@ W = W_T';
 
 % difference between the y value obtained from 
 % randomly initialised  weight matrix
-% and actual y vlue obtained from A and X
-diff = W'*X_test(:,1) - A_star*X_test(:,1);
-diff_norm = norm(diff,2);
+% and actual y value obtained from A and X
+Y_diff_initial = W'*X_test(:,1) - A_star*X_test(:,1);
+Y_diff_initial_norm = norm(Y_diff_initial,2);
 
 % X_mat is defined in data generation
 % W_diff is columnwise difference between A_star and 
@@ -118,25 +118,30 @@ for iter =1:num_iter
    end
 end
 
-W_T_before_norm = W';
-diff = W_T_before_norm*X_test(:,1) - A_star*X_test(:,1);
-diff_norm1 = norm(diff,2);
+% difference between the y value obtained from 
+% converged weight matrix before normalization
+% and actual y value obtained from A and X
+W_T_before_normlization = W';
+Y_diff_final_before_normlization = W_T_before_normlization*X_test(:,1) - A_star*X_test(:,1);
+Y_diff_final_bn_norm = norm(Y_diff_final_before_normlization,2);
 
-
-W_diff1 = zeros(size(X_mat,1),1);
+% W_diff1 is columnwise difference between A_star and 
+% converged weight matrix before normalization
+W_diff_fbn = zeros(size(X_mat,1),1);
 for i =1:size(X_mat,1)
-    W1 = W_T_before_norm(:,i) - A_star(:,i);
+    W1 = W_T_before_normlization(:,i) - A_star(:,i);
     colnorm=sqrt(sum(W1.^2,1));
-    W_diff1(i,1) = colnorm;
+    W_diff_fbn(i,1) = colnorm;
 end
 
+% difference between the y value obtained from 
+% converged weight matrix
+% and actual y value obtained from A and X
 W_T = W';
 for i =1:size(X_mat,1)
     colnorm=sqrt(sum(W_T(:,i).^2,1));
     W_T(:,i) = W_T(:,i)./colnorm;
 end
 W = W_T';
-diff = W'*X_test(:,1) - A_star*X_test(:,1);
-diff_norm2 = norm(diff,2);
-
-
+Y_diff_final = W'*X_test(:,1) - A_star*X_test(:,1);
+Y_diff_final_norm = norm(Y_diff_final,2);
