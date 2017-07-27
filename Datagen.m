@@ -1,41 +1,39 @@
 clear
 clc
  
-N = 256;
+h = 256;
 S = 4;
-M = 100;
- 
-A_star = randn(M,N);
+n = 100;
+m_1 = -1/4096;
+
+A_star = randn(n,h);
 A_star = orth(A_star')';
 
-for i =1:N
+for i =1:h
     colnorm=sqrt(sum(A_star(:,i).^2,1));
     A_star(:,i) = A_star(:,i)./colnorm;
 end
- 
-A = A_star;
-coherence_mat = A'*A;
-mu_max= 0;row_max = -1; col_max = -1;
-for i = 1:M
-    for j = 1:N
+
+coherence_mat = A_star'*A_star;
+mu_max= 0;
+for i = 1:n
+    for j = 1:h
         if(i~=j)
             if(abs(coherence_mat(i,j))>mu_max)
                 mu_max = abs(coherence_mat(i,j));
-                row_max = i;
-                col_max = j;
             end
         end
     end
 end
 Num_datapoints = 7200;
  
-Y_mat = zeros(M,7000);
-X_mat = zeros(N,7000);
-Y_test = zeros(M,200);
-X_test = zeros(N,200);
-var_x_star = 1/(N*log(M));
+Y_mat = zeros(n,7000);
+X_mat = zeros(h,7000);
+Y_test = zeros(n,200);
+X_test = zeros(h,200);
+var_x_star = 1/(h*log(n));
 for i = 1:Num_datapoints  
-    x = zeros(N,1);
+    x = zeros(h,1);
     x(1:S) = normrnd(- 1/4096,var_x_star,[S 1]);
     if(i<=7000)
         y = A_star*x;
@@ -48,10 +46,7 @@ for i = 1:Num_datapoints
         X_test(:,i-7000) = x;
     end
 end
-
-
-m_1 = -1/4096;
-var_x = var_x_star;
-m_2 = var_x_star + m_1^2;
 mu_by_root_n = mu_max;
+
+clear x y i j mu_max var_x_star Num_datapoints coherence_mat colnorm S n h 
 
