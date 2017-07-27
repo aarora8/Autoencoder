@@ -42,19 +42,19 @@ Y_diff_initial_norm = norm(Y_diff_initial,2);
 % X_mat is defined in data generation
 % W_diff is columnwise difference between A_star and 
 % randomly initialised  weight matrix
-W_diff = zeros(size(X_mat,1),1);
+WAstar_diff_initial = zeros(size(X_mat,1),1);
 for i =1:size(X_mat,1)
     W1 = W_T(:,i) - A_star(:,i);
     colnorm=sqrt(sum(W1.^2,1));
-    W_diff(i,1) = colnorm;
+    WAstar_diff_initial(i,1) = colnorm;
 end
 
-
+% norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 2; % number of iterations to run the simulation
+num_iter = 15; % number of iterations to run the simulation
 % W_diff2 stores columnwise difference between A_star and 
-% converged weight matrix at every iteration
-W_diff2 = zeros(size(X_mat,1),num_iter);
+% weight matrix at every iteration
+WAstar_diff = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
     iter
     g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
@@ -90,7 +90,7 @@ for iter =1:num_iter
             fnorm = 0;
             for i1 =1:4
                 w1 = W_tilda(i1,:);
-                rownorm=sum(W1.^2,1); % error location
+                rownorm=sum(w1.^2,1);  
                 fnorm = fnorm+ rownorm;
             end
             term_ab = lambda_2*fnorm*W_T(:,i)'*Y_mat(:,k)*Y_mat(:,k);
@@ -110,7 +110,7 @@ for iter =1:num_iter
     for i =1:size(X_mat,1)
         W1 = W_T(:,i) - A_star(:,i);
         colnorm=sqrt(sum(W1.^2,1));
-        W_diff2(i,iter) = colnorm;
+        WAstar_diff(i,iter) = colnorm;
    end
 end % end num iter 
 
@@ -121,7 +121,7 @@ W_T_before_normlization = W';
 Y_diff_final_before_normlization = W_T_before_normlization*X_test(:,1) - A_star*X_test(:,1);
 Y_diff_final_bn_norm = norm(Y_diff_final_before_normlization,2);
 
-% W_diff1 is columnwise difference between A_star and 
+% W_diff_fbn is columnwise difference between A_star and 
 % converged weight matrix before normalization
 W_diff_fbn = zeros(size(X_mat,1),1);
 for i =1:size(X_mat,1)
