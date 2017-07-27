@@ -1,7 +1,7 @@
 % system parameters
 N = size(Y_mat,2); % number of data points, 7000
 h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
-eta = 0.003; % learning rate
+eta = 0.05; % learning rate
 S = 4; % support size   
 
 % defining lambda 1 and labda 2, regularization parameters
@@ -90,7 +90,7 @@ for iter =1:num_iter
             fnorm = 0;
             for i1 =1:4
                 w1 = W_tilda(i1,:);
-                rownorm=sum(w1.^2,1);  
+                rownorm=sum(w1'.^2,1);  
                 fnorm = fnorm+ rownorm;
             end
             term_ab = lambda_2*fnorm*W_T(:,i)'*Y_mat(:,k)*Y_mat(:,k);
