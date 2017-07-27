@@ -7,7 +7,7 @@ n = 100;
 m_1 = -1/4096;
 
 A_star = randn(n,h);
-A_star = orth(A_star')';
+%A_star = orth(A_star')';
 
 for i =1:h
     colnorm=sqrt(sum(A_star(:,i).^2,1));
@@ -34,7 +34,7 @@ X_test = zeros(h,200);
 var_x_star = 1/(h*log(n));
 for i = 1:Num_datapoints  
     x = zeros(h,1);
-    x(1:S) = normrnd(- 1/4096,var_x_star,[S 1]);
+    x(1:S) = normrnd(m_1,var_x_star,[S 1]);
     if(i<=7000)
         y = A_star*x;
         Y_mat(:,i) = y;
@@ -104,10 +104,10 @@ end
 gradient_val = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 5; % number of iterations to run the simulation
+num_iter = 3; % number of iterations to run the simulation
 % WAstar_diff stores columnwise difference between A_star and 
 % weight matrix at every iteration
-WAstar_diff = zeros(size(X_mat,1),num_iter);
+WAstar_diff_iter = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
     iter
     g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
@@ -175,7 +175,7 @@ for iter =1:num_iter
     for i =1:size(X_mat,1)
         W1 = W_T(:,i) - A_star(:,i);
         colnorm=sqrt(sum(W1.^2,1));
-        WAstar_diff(i,iter) = colnorm;
+        WAstar_diff_iter(i,iter) = colnorm;
    end
 end % end num iter 
 
@@ -206,3 +206,10 @@ end
 W = W_T';
 Y_diff_final = W'*X_test(:,1) - A_star*X_test(:,1);
 Y_diff_final_norm = norm(Y_diff_final,2);
+
+clear colnorm final_term fnorm g_i i i1 iter j k N num_iter q_i regularization_term_1   
+clear regularization_term_2 rownorm term12 term_1 term_2 term_aa term_ab term_CHY
+clear term_jh term_l1_1 term_l1_2 term_prod_ab term_wTY term_wy termjh_chy var_weight
+clear w1 W1 W_tilda 
+
+save test.mat
