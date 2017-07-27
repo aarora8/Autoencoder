@@ -40,7 +40,7 @@ Y_diff_initial = W'*X_test(:,1) - A_star*X_test(:,1);
 Y_diff_initial_norm = norm(Y_diff_initial,2);
 
 % X_mat is defined in data generation
-% W_diff is columnwise difference between A_star and 
+% WAstar_diff_initial is columnwise difference between A_star and 
 % randomly initialised  weight matrix
 WAstar_diff_initial = zeros(size(X_mat,1),1);
 for i =1:size(X_mat,1)
@@ -49,10 +49,11 @@ for i =1:size(X_mat,1)
     WAstar_diff_initial(i,1) = colnorm;
 end
 
+gradient_val = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 15; % number of iterations to run the simulation
-% W_diff2 stores columnwise difference between A_star and 
+num_iter = 50; % number of iterations to run the simulation
+% WAstar_diff stores columnwise difference between A_star and 
 % weight matrix at every iteration
 WAstar_diff = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
@@ -80,8 +81,8 @@ for iter =1:num_iter
             final_term = (1/N)*final_term; % taking expectation of the first loss term
         end % end if 
         regularization_term_1  = lambda_1*W_T(:,i);% first regularization term
-        % summing the regularization term 2 over all data points since it contains
-        % a y term 
+        % summing the regularization term 2 over all data points 
+        % since it contains a y term 
         for k=1:N
             W_tilda = zeros(size(X_mat,1),size(Y_mat,1)); 
             W_tilda(1:4,:) = W(1:4,:);
@@ -100,9 +101,21 @@ for iter =1:num_iter
         % gradient of ith column of w transpose
         g_i = final_term + regularization_term_1 + regularization_term_2; 
         g_mat(i,:) = g_i'; % taking transpose to get gradient of ith row of W
-        colnorm=sqrt(sum(g_i.^2,1));    
-
+        colnorm=sqrt(sum(g_i.^2,1));
+        if(i == 1)
+             gradient_val = [gradient_val colnorm];
+        end
+        % break if gradient has become 100 times smaller
+        if(gradient_val(1,iter)/gradient_val(1,1)<0.01) 
+            break;
+        end
     end % end for ifrom 1 to s
+    
+     % break if gradient has become 100 times smaller
+     if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
+             break;
+     end
+
     % norm of gradient of each row, at every iteration
     gmat_val = [gmat_val sqrt(diag(g_mat*g_mat'))]; 
     W = W-eta*g_mat; % updating W matrix
