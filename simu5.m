@@ -15,7 +15,7 @@ term_l1_2 = h*q_i*(1 - delta)^2; % 3.2 proposed gradient, term for lambda 1
 lambda_1 = term_l1_1 + term_l1_2;% 3.2 proposed gradient, lambda 1
 lambda_2 = -1; % 3.2 proposed gradient, lambda 1
 
-% it will store ...
+% it will store gradient of Weight matrix
 g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
  
 
@@ -50,9 +50,8 @@ for i =1:size(X_mat,1)
 end
 
 
-% gradient_val = [];
 gmat_val = [];
-num_iter = 15; % number of iterations to run the simulation
+num_iter = 2; % number of iterations to run the simulation
 % W_diff2 stores columnwise difference between A_star and 
 % converged weight matrix at every iteration
 W_diff2 = zeros(size(X_mat,1),num_iter);
@@ -101,24 +100,11 @@ for iter =1:num_iter
         % gradient of ith column of w transpose
         g_i = final_term + regularization_term_1 + regularization_term_2; 
         g_mat(i,:) = g_i'; % taking transpose to get gradient of ith row of W
-        colnorm=sqrt(sum(g_i.^2,1));
-%         if(i == 1)
-%             gradient_val = [gradient_val colnorm];
-%         end
-        
-%         % break if gradient has become 100 times smaller
-%         if(gradient_val(1,iter)/gradient_val(1,1)<0.01) 
-%             break;
-%         end      
+        colnorm=sqrt(sum(g_i.^2,1));    
 
     end % end for ifrom 1 to s
-    
-%     % break if gradient has become 100 times smaller
-%     if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
-%             break;
-%    end  
-
-    gmat_val = [gmat_val sqrt(diag(g_mat*g_mat'))];
+    % norm of gradient of each row, at every iteration
+    gmat_val = [gmat_val sqrt(diag(g_mat*g_mat'))]; 
     W = W-eta*g_mat; % updating W matrix
     W_T = W'; % reassigning W transpose
     for i =1:size(X_mat,1)
