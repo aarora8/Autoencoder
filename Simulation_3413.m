@@ -109,7 +109,7 @@ end
 gradient_val = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 15; % number of iterations to run the simulation
+num_iter = 50; % number of iterations to run the simulation
 % WAstar_diff stores columnwise difference between A_star and 
 % weight matrix at every iteration
 WAstar_diff_iter = zeros(size(X_mat,1),num_iter);
@@ -190,7 +190,7 @@ end % end num iter
 W_T_before_normlization = W';
 Y_diff_final_bn_norm = 0;
 for i = 1:N_test
-    Y_diff_final_before_normlization = W_T_before_normlization'*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_final_before_normlization = W_T_before_normlization*X_test(:,i) - A_star*X_test(:,i);
     Y_diff_final_bn_norm = Y_diff_final_bn_norm + norm(Y_diff_final_before_normlization,2);
 end
 Y_diff_final_bn_norm = (1/N_test)*Y_diff_final_bn_norm;
@@ -209,7 +209,7 @@ W = W_T';
 W_T_final = W';
 Y_diff_final_norm = 0;
 for i = 1:N_test
-    Y_diff_final = W_T_final'*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_final = W_T_final*X_test(:,i) - A_star*X_test(:,i);
     Y_diff_final_norm = Y_diff_final_norm + norm(Y_diff_final,2);
 end
 Y_diff_final_norm = (1/N_test)*Y_diff_final_norm;
