@@ -48,7 +48,7 @@ for i = 1:Num_datapoints
 end
 mu_by_root_n = mu_max;
 
-clear x y i j mu_max var_x_star Num_datapoints coherence_mat colnorm S n h 
+clear x y i j Num_datapoints coherence_mat colnorm S n h 
 
 % system parameters
 N = size(Y_mat,2); % number of data points, 7000
