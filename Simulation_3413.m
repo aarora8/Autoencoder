@@ -207,9 +207,12 @@ W = W_T';
 Y_diff_final = W'*X_test(:,1) - A_star*X_test(:,1);
 Y_diff_final_norm = norm(Y_diff_final,2);
 
+% removing unnecessary variables before storing
 clear colnorm final_term fnorm g_i i i1 iter j k N num_iter q_i regularization_term_1   
 clear regularization_term_2 rownorm term12 term_1 term_2 term_aa term_ab term_CHY
 clear term_jh term_l1_1 term_l1_2 term_prod_ab term_wTY term_wy termjh_chy var_weight
 clear w1 W1 W_tilda 
 
+% most important variables are Y_diff_final_norm WAstar_diff_iter gradient_val
+% Y_diff_final_bn_norm Y_diff_initial_norm
 save test.mat
