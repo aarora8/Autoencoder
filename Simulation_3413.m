@@ -53,6 +53,7 @@ clear x y i j mu_max var_x_star Num_datapoints coherence_mat colnorm S n h
 % system parameters
 N = size(Y_mat,2); % number of data points, 7000
 h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
+N_test = size(Y_test,2);
 eta = 0.05; % learning rate
 S = 4; % support size   
 
@@ -88,8 +89,12 @@ W = W_T';
 % difference between the y value obtained from 
 % randomly initialised  weight matrix
 % and actual y value obtained from A and X
-Y_diff_initial = W'*X_test(:,1) - A_star*X_test(:,1);
-Y_diff_initial_norm = norm(Y_diff_initial,2);
+Y_diff_initial_norm = 0;
+for i = 1:N_test
+    Y_diff_initial = W'*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_initial_norm = Y_diff_initial_norm + norm(Y_diff_initial,2);
+end
+Y_diff_initial_norm = (1/N_test)*Y_diff_initial_norm;
 
 % X_mat is defined in data generation
 % WAstar_diff_initial is columnwise difference between A_star and 
@@ -104,7 +109,7 @@ end
 gradient_val = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 3; % number of iterations to run the simulation
+num_iter = 15; % number of iterations to run the simulation
 % WAstar_diff stores columnwise difference between A_star and 
 % weight matrix at every iteration
 WAstar_diff_iter = zeros(size(X_mat,1),num_iter);
@@ -183,17 +188,13 @@ end % end num iter
 % converged weight matrix before normalization
 % and actual y value obtained from A and X
 W_T_before_normlization = W';
-Y_diff_final_before_normlization = W_T_before_normlization*X_test(:,1) - A_star*X_test(:,1);
-Y_diff_final_bn_norm = norm(Y_diff_final_before_normlization,2);
-
-% W_diff_fbn is columnwise difference between A_star and 
-% converged weight matrix before normalization
-W_diff_fbn = zeros(size(X_mat,1),1);
-for i =1:size(X_mat,1)
-    W1 = W_T_before_normlization(:,i) - A_star(:,i);
-    colnorm=sqrt(sum(W1.^2,1));
-    W_diff_fbn(i,1) = colnorm;
+Y_diff_final_bn_norm = 0;
+for i = 1:N_test
+    Y_diff_final_before_normlization = W_T_before_normlization'*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_final_bn_norm = Y_diff_final_bn_norm + norm(Y_diff_final_before_normlization,2);
 end
+Y_diff_final_bn_norm = (1/N_test)*Y_diff_final_bn_norm;
+
 
 % difference between the y value obtained from 
 % converged weight matrix
@@ -204,8 +205,15 @@ for i =1:size(X_mat,1)
     W_T(:,i) = W_T(:,i)./colnorm;
 end
 W = W_T';
-Y_diff_final = W'*X_test(:,1) - A_star*X_test(:,1);
-Y_diff_final_norm = norm(Y_diff_final,2);
+
+W_T_final = W';
+Y_diff_final_norm = 0;
+for i = 1:N_test
+    Y_diff_final = W_T_final'*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_final_norm = Y_diff_final_norm + norm(Y_diff_final,2);
+end
+Y_diff_final_norm = (1/N_test)*Y_diff_final_norm;
+
 
 % removing unnecessary variables before storing
 clear colnorm final_term fnorm g_i i i1 iter j k N num_iter q_i regularization_term_1   
