@@ -5,6 +5,7 @@ clc
 load('../simulation_data.mat')
 Num_datapoints = 7200;
 m_1 = -1/4096;
+S = 4;
 Y_mat = zeros(n,7000);
 X_mat = zeros(h,7000);
 Y_test = zeros(n,200);
