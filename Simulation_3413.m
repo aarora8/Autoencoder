@@ -2,7 +2,7 @@
 
 clear
 clc
-load('simulation_data.mat')
+load('../simulation_data.mat')
 Num_datapoints = 7200;
 m_1 = -1/4096;
 Y_mat = zeros(n,7000);
