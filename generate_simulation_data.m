@@ -36,4 +36,4 @@ W = W_T';
 W_initial = W;
 
 clear x y i j coherence_mat colnorm var_weight W1 
-save ('simulation_data.mat','n','h','mu_by_root_n','A_star', 'W_initial', 'ball_distance', 'W', 'W_T'); 
+save ('../simulation_data.mat','n','h','mu_by_root_n','A_star', 'W_initial', 'ball_distance', 'W', 'W_T'); 
