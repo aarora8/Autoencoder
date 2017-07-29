@@ -183,7 +183,6 @@ clear regularization_term_2 rownorm term12 term_1 term_2 term_aa term_ab term_CH
 clear term_jh term_l1_1 term_l1_2 term_prod_ab term_wTY term_wy termjh_chy var_weight
 clear w1 W1 W_tilda C delta epsilon_i g_mat lambda1 lambda2 
 
-clear n h S mu_by_root_n A_star W_initial ball_distance W W_T
 % most important variables are Y_diff_final_norm WAstar_diff_iter gradient_val
 % Y_diff_final_bn_norm Y_diff_initial_norm
 save test.mat
