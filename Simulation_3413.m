@@ -1,8 +1,7 @@
 % performing simulations for experiments
 clear; clc;
-Support = [4,6,9,12,15];
-
-for S = Support
+%[4,6,8,9,12,15]
+for S = [4,6]
     load('../simulation_data.mat')
     Num_datapoints = 7200;
     m_1 = -1/4096;
@@ -30,11 +29,10 @@ for S = Support
     % system parameters
     h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
 
-    eta = 0.05; % learning rate
-    S = 4; % support size   
+    eta = 0.003; % learning rate
     W = W_initial;
     W_T = W_T_initial;
-    num_iter = 2; % number of iterations to run the simulation
+    num_iter = 60; % number of iterations to run the simulation
     % WAstar_diff stores columnwise difference between A_star and 
     % weight matrix at every iteration
     WAstar_diff_per_iter = zeros(size(X_mat,1),num_iter+1);
@@ -74,7 +72,6 @@ for S = Support
     % norm of gradient of each row, at every iteration
     gmat_val = [];
     for iter =1:num_iter 
-        iter
         g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
         for i= 1:S
             final_term =zeros(size(Y_mat,1),1); % differentiation term of loss 1
@@ -181,10 +178,6 @@ for S = Support
     clear W W_T Y_diff_initial Y_diff_norm var_x_star Num_datapoints N_test m_1 lambda_1 lambda_2 i2 gmat_val
 
     % most important variables are Y_diff_per_iter WAstar_diff_iter gradient_val_per_iter 
-    result = strcat('result_sparcity',int2str(S),'.mat');
+    result = strcat('result_sparsity',int2str(S),'.mat');
     save (result,'eta','S', 'gradient_norm_per_iter','W_T_final','W_T_final_bn','WAstar_diff_per_iter','X_mat','X_test','Y_diff_norm_per_iter','Y_mat','Y_test'); 
 end 
-
-
-
-
