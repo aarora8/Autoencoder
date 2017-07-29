@@ -1,6 +1,6 @@
 % performing simulations for experiments with support =4
 clear; clc;
-load('../simulation_data.mat')
+load('../../simulation_data.mat')
 
 Num_datapoints = 7200;
 m_1 = -1/4096;
