@@ -1,7 +1,8 @@
 % performing simulations for experiments
 clear; clc;
-%[4,6,8,9,12,15]
-for S = [4,6]
+%[6,9,12,14,15,18,21]
+for S = [4]
+    S
     load('../simulation_data.mat')
     Num_datapoints = 7200;
     m_1 = -1/4096;
@@ -27,12 +28,12 @@ for S = [4,6]
         end
     end
     % system parameters
-    h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
+    h = size(X_mat,1) % hidden layer size, sparse code dimension, 256
 
-    eta = 0.003; % learning rate
+    eta = 0.02 % learning rate
     W = W_initial;
     W_T = W_T_initial;
-    num_iter = 60; % number of iterations to run the simulation
+    num_iter = 60 % number of iterations to run the simulation
     % WAstar_diff stores columnwise difference between A_star and 
     % weight matrix at every iteration
     WAstar_diff_per_iter = zeros(size(X_mat,1),num_iter+1);
@@ -72,6 +73,7 @@ for S = [4,6]
     % norm of gradient of each row, at every iteration
     gmat_val = [];
     for iter =1:num_iter 
+        iter
         g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
         for i= 1:S
             final_term =zeros(size(Y_mat,1),1); % differentiation term of loss 1

@@ -1,6 +1,6 @@
 % generating data for experiments with support =4
 clear; clc;
-h = 256;
+h = 512;
 n = 100;
 A_star = randn(n,h);
 for i =1:h
@@ -35,4 +35,5 @@ end
 W_T_initial = W_T;
 W_initial = W_T';
 clear x y i j coherence_mat colnorm var_weight W1 W W_T
-save ('../simulation_data.mat','n','h','mu_by_root_n','A_star', 'W_initial','W_T_initial','ball_distance'); 
+result = strcat('../simulation_data_',int2str(h),'.mat');
+save (result,'n','h','mu_by_root_n','A_star', 'W_initial','W_T_initial','ball_distance'); 
