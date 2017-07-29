@@ -42,6 +42,8 @@ To perform a simulation, first run Datagen.m code and then run simu5.m.
 - p < {zie/2,1/3}
 - |s| <= h^p
 
-scp /Users/ashisharora/Desktop/simulation1/PaperID3413/Simulation_3413.m aaror@login.clsp.jhu.edu:/home/aaror/
-cp Simulation_3413.m /export/b18/aarora/
-cat Simulation_3413.m | matlab -nodesktop -nosplash
+- scp /Users/ashisharora/Desktop/simulation1/PaperID3413/Simulation_3413.m aaror@login.clsp.jhu.edu:/home/aaror/
+- cp Simulation_3413.m /export/b18/aarora/
+- cat Simulation_3413.m | matlab -nodesktop -nosplash
+- nohup matlab -nosplash -nodesktop -nojvm < Simulation_3413.m 1> logfile 2> err.out
+
