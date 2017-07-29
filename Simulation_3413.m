@@ -1,15 +1,16 @@
 % performing simulations for experiments with support =4
+clear; clc;
+load('../simulation_data.mat')
 
-clear
-clc
-load('../../simulation_data.mat')
 Num_datapoints = 7200;
 m_1 = -1/4096;
 S = 4;
-Y_mat = zeros(n,7000);
-X_mat = zeros(h,7000);
-Y_test = zeros(n,200);
-X_test = zeros(h,200);
+N = 7000; % number of training data points
+N_test = 200;
+Y_mat = zeros(n,N);
+X_mat = zeros(h,N);
+Y_test = zeros(n,N_test);
+X_test = zeros(h,N_test);
 var_x_star = 1/(h*log(n));
 for i = 1:Num_datapoints  
     x = zeros(h,1);
@@ -25,58 +26,54 @@ for i = 1:Num_datapoints
         X_test(:,i-7000) = x;
     end
 end
-
-clear x y i 
 % system parameters
-N = size(Y_mat,2); % number of data points, 7000
 h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
-N_test = size(Y_test,2);
+
 eta = 0.05; % learning rate
 S = 4; % support size   
+W = W_initial;
+W_T = W_T_initial;
+num_iter = 10; % number of iterations to run the simulation
+% WAstar_diff stores columnwise difference between A_star and 
+% weight matrix at every iteration
+WAstar_diff_per_iter = zeros(size(X_mat,1),num_iter+1);
+% it will store gradient of Weight matrix
+g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
 
 % defining lambda 1 and labda 2, regularization parameters
 delta = 0.95; % used in loss function
 epsilon_i = 1/2*abs(m_1)*S*(delta+mu_by_root_n); % epsilon in theorm 3.1
 C = (1 - delta)^2;  % remark, after theorm 3.2
-
 q_i = S/h; % sparsity probability  
 term_l1_1 = C*h*S; % 3.2 proposed gradient, term for lambda 1
 term_l1_2 = h*q_i*(1 - delta)^2; % 3.2 proposed gradient, term for lambda 1
 lambda_1 = term_l1_1 + term_l1_2;% 3.2 proposed gradient, lambda 1
 lambda_2 = -1; % 3.2 proposed gradient, lambda 1
 
-% it will store gradient of Weight matrix
-g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
- 
 % difference between the y value obtained from 
 % randomly initialised  weight matrix
 % and actual y value obtained from A and X
-Y_diff_initial_norm = 0;
+Y_diff_norm_per_iter = [];
+Y_diff_norm = 0;
 for i = 1:N_test
-    Y_diff_initial = W'*X_test(:,i) - A_star*X_test(:,i);
-    Y_diff_initial_norm = Y_diff_initial_norm + norm(Y_diff_initial,2);
+    Y_diff_initial = W_T*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_norm = Y_diff_norm + norm(Y_diff_initial,2);
 end
-Y_diff_initial_norm = (1/N_test)*Y_diff_initial_norm;
+Y_diff_norm = (1/N_test)*Y_diff_norm;
+Y_diff_norm_per_iter = [Y_diff_norm_per_iter Y_diff_norm];
 
-% X_mat is defined in data generation
-% WAstar_diff_initial is columnwise difference between A_star and 
-% randomly initialised  weight matrix
-WAstar_diff_initial = zeros(size(X_mat,1),1);
+iter=1;
 for i =1:size(X_mat,1)
     W1 = W_T(:,i) - A_star(:,i);
     colnorm=sqrt(sum(W1.^2,1));
-    WAstar_diff_initial(i,1) = colnorm;
+    WAstar_diff_per_iter(i,iter) = colnorm;
 end
-
+   
 gradient_norm_per_iter = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 50; % number of iterations to run the simulation
-% WAstar_diff stores columnwise difference between A_star and 
-% weight matrix at every iteration
-WAstar_diff_per_iter = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
-    %iter
+    iter
     g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
     for i= 1:S
         final_term =zeros(size(Y_mat,1),1); % differentiation term of loss 1
@@ -124,6 +121,7 @@ for iter =1:num_iter
         if(i == 1)
              gradient_norm_per_iter = [gradient_norm_per_iter colnorm];
         end
+        
         % break if gradient has become 100 times smaller
         if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01) 
             break;
@@ -142,25 +140,21 @@ for iter =1:num_iter
     for i =1:size(X_mat,1)
         W1 = W_T(:,i) - A_star(:,i);
         colnorm=sqrt(sum(W1.^2,1));
-        WAstar_diff_per_iter(i,iter) = colnorm;
-   end
+        WAstar_diff_per_iter(i,iter+1) = colnorm;
+    end
+   
+     Y_diff_norm = 0;
+     for i2 = 1:N_test
+         Y_diff_initial = W_T*X_test(:,i2) - A_star*X_test(:,i2);
+         Y_diff_norm = Y_diff_norm + norm(Y_diff_initial,2);
+     end
+     Y_diff_norm = (1/N_test)*Y_diff_norm;
+     Y_diff_norm_per_iter = [Y_diff_norm_per_iter Y_diff_norm];
+        
 end % end num iter 
 
-% difference between the y value obtained from 
-% converged weight matrix before normalization
-% and actual y value obtained from A and X
-W_T_before_normlization = W';
-Y_diff_final_bn_norm = 0;
-for i = 1:N_test
-    Y_diff_final_before_normlization = W_T_before_normlization*X_test(:,i) - A_star*X_test(:,i);
-    Y_diff_final_bn_norm = Y_diff_final_bn_norm + norm(Y_diff_final_before_normlization,2);
-end
-Y_diff_final_bn_norm = (1/N_test)*Y_diff_final_bn_norm;
-
-
-% difference between the y value obtained from 
-% converged weight matrix
-% and actual y value obtained from A and X
+W_T_final_bn = W';
+% normalizing W
 W_T = W';
 for i =1:size(X_mat,1)
     colnorm=sqrt(sum(W_T(:,i).^2,1));
@@ -169,20 +163,27 @@ end
 W = W_T';
 
 W_T_final = W';
-Y_diff_final_norm = 0;
+Y_diff_norm = 0;
 for i = 1:N_test
-    Y_diff_final = W_T_final*X_test(:,i) - A_star*X_test(:,i);
-    Y_diff_final_norm = Y_diff_final_norm + norm(Y_diff_final,2);
+    Y_diff_initial = W_T_final*X_test(:,i) - A_star*X_test(:,i);
+    Y_diff_norm = Y_diff_norm + norm(Y_diff_initial,2);
 end
-Y_diff_final_norm = (1/N_test)*Y_diff_final_norm;
-
+Y_diff_norm = (1/N_test)*Y_diff_norm;
+Y_diff_norm_per_iter = [Y_diff_norm_per_iter Y_diff_norm];
 
 % removing unnecessary variables before storing
 clear colnorm final_term fnorm g_i i i1 iter j k N num_iter q_i regularization_term_1   
 clear regularization_term_2 rownorm term12 term_1 term_2 term_aa term_ab term_CHY
 clear term_jh term_l1_1 term_l1_2 term_prod_ab term_wTY term_wy termjh_chy var_weight
 clear w1 W1 W_tilda C delta epsilon_i g_mat lambda1 lambda2 
+clear n h mu_by_root_n A_star W_initial W_T_initial ball_distance x y
+clear W W_T Y_diff_initial Y_diff_norm var_x_star Num_datapoints N_test m_1 lambda_1 lambda_2 i2 gmat_val
 
-% most important variables are Y_diff_final_norm WAstar_diff_iter gradient_val
-% Y_diff_final_bn_norm Y_diff_initial_norm
-save test.mat
+% most important variables are Y_diff_per_iter WAstar_diff_iter gradient_val_per_iter 
+result = strcat('result_sparcity',int2str(S),'.mat');
+save (result,'eta','gradient_norm_per_iter','W_T_final','W_T_final_bn','WAstar_diff_per_iter','X_mat','X_test','Y_diff_norm_per_iter','Y_mat','Y_test'); 
+
+
+
+
+

@@ -32,8 +32,7 @@ for i =1:h
     W1 = (ball_distance)*W1./colnorm;
     W_T(:,i) = A_star(:,i) - W1;
 end
-W = W_T';
-W_initial = W;
-
-clear x y i j coherence_mat colnorm var_weight W1 
-save ('../simulation_data.mat','n','h','mu_by_root_n','A_star', 'W_initial', 'ball_distance', 'W', 'W_T'); 
+W_T_initial = W_T;
+W_initial = W_T';
+clear x y i j coherence_mat colnorm var_weight W1 W W_T
+save ('../simulation_data.mat','n','h','mu_by_root_n','A_star', 'W_initial','W_T_initial','ball_distance'); 
