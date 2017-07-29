@@ -3,7 +3,7 @@ clear; clc;
 %[6,9,12,14,15,18,21]
 for S = [4,6,9,12,15]
     S
-    load('../simulation_data.mat')
+    load('../simulation_data_512.mat')
     Num_datapoints = 7200;
     m_1 = -1/4096;
     N = 7000; % number of training data points
