@@ -1,7 +1,7 @@
 % performing simulations for experiments
 clear; clc;
 %[6,9,12,14,15,18,21]
-for S = [4]
+for S = [4,6,9,12,15]
     S
     load('../simulation_data.mat')
     Num_datapoints = 7200;
