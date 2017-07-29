@@ -3,7 +3,7 @@ clear; clc;
 %[6,9,12,14,15,18,21]
 for S = [4,6,9,12,15]
     S
-    load('../simulation_data_1024.mat')
+    load('../simulation_data_256.mat')
     Num_datapoints = 7200;
     m_1 = -1/4096;
     N = 7000; % number of training data points
@@ -30,7 +30,7 @@ for S = [4,6,9,12,15]
     % system parameters
     h = size(X_mat,1) % hidden layer size, sparse code dimension, 256
 
-    eta = 0.02 % learning rate
+    eta = 0.05 % learning rate
     W = W_initial;
     W_T = W_T_initial;
     num_iter = 60 % number of iterations to run the simulation
