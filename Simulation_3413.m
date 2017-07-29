@@ -71,12 +71,12 @@ end
 gradient_norm_per_iter = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 3; % number of iterations to run the simulation
+num_iter = 50; % number of iterations to run the simulation
 % WAstar_diff stores columnwise difference between A_star and 
 % weight matrix at every iteration
 WAstar_diff_per_iter = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
-    iter
+    %iter
     g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
     for i= 1:S
         final_term =zeros(size(Y_mat,1),1); % differentiation term of loss 1
