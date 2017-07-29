@@ -46,4 +46,4 @@ To perform a simulation, first run Datagen.m code and then run simu5.m.
 - cp Simulation_3413.m /export/b18/aarora/
 - cat Simulation_3413.m | matlab -nodesktop -nosplash
 - nohup matlab -nosplash -nodesktop -nojvm < Simulation_3413.m 1> logfile 2> err.out
-
+- https://github.com/aarora8/PaperID3413.git
