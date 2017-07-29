@@ -1,32 +1,8 @@
 clear
 clc
- 
-h = 256;
-S = 4;
-n = 100;
-m_1 = -1/4096;
-
-A_star = randn(n,h);
-%A_star = orth(A_star')';
-
-for i =1:h
-    colnorm=sqrt(sum(A_star(:,i).^2,1));
-    A_star(:,i) = A_star(:,i)./colnorm;
-end
-
-coherence_mat = A_star'*A_star;
-mu_max= 0;
-for i = 1:n
-    for j = 1:h
-        if(i~=j)
-            if(abs(coherence_mat(i,j))>mu_max)
-                mu_max = abs(coherence_mat(i,j));
-            end
-        end
-    end
-end
+load('simulation_data.mat')
 Num_datapoints = 7200;
- 
+m_1 = -1/4096;
 Y_mat = zeros(n,7000);
 X_mat = zeros(h,7000);
 Y_test = zeros(n,200);
@@ -46,10 +22,8 @@ for i = 1:Num_datapoints
         X_test(:,i-7000) = x;
     end
 end
-mu_by_root_n = mu_max;
 
-clear x y i j Num_datapoints coherence_mat colnorm S n h 
-
+clear x y i 
 % system parameters
 N = size(Y_mat,2); % number of data points, 7000
 h = size(X_mat,1); % hidden layer size, sparse code dimension, 256
@@ -71,21 +45,6 @@ lambda_2 = -1; % 3.2 proposed gradient, lambda 1
 % it will store gradient of Weight matrix
 g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % gradient matrix
  
-
-% creating a randomly initialised  weight matrix
-% this weight matrix will be in the columnwise ball distance of A_star
-W = zeros(size(X_mat,1),size(Y_mat,1)); % weight matrix
-var_weight = 1; 
-W_T = W';
-ball_distance = 2;
-for i =1:size(X_mat,1)
-    W1 = normrnd(0,var_weight,[size(Y_mat,1),1]);
-    colnorm=sqrt(sum(W1.^2,1));
-    W1 = (ball_distance)*W1./colnorm;
-    W_T(:,i) = A_star(:,i) - W1;
-end
-W = W_T';
-
 % difference between the y value obtained from 
 % randomly initialised  weight matrix
 % and actual y value obtained from A and X
@@ -106,13 +65,13 @@ for i =1:size(X_mat,1)
     WAstar_diff_initial(i,1) = colnorm;
 end
 
-gradient_val = [];
+gradient_norm_per_iter = [];
 % norm of gradient of each row, at every iteration
 gmat_val = [];
-num_iter = 50; % number of iterations to run the simulation
+num_iter = 3; % number of iterations to run the simulation
 % WAstar_diff stores columnwise difference between A_star and 
 % weight matrix at every iteration
-WAstar_diff_iter = zeros(size(X_mat,1),num_iter);
+WAstar_diff_per_iter = zeros(size(X_mat,1),num_iter);
 for iter =1:num_iter 
     iter
     g_mat = zeros(size(X_mat,1),size(Y_mat,1)); % 256X100
@@ -160,16 +119,16 @@ for iter =1:num_iter
         g_mat(i,:) = g_i'; % taking transpose to get gradient of ith row of W
         colnorm=sqrt(sum(g_i.^2,1));
         if(i == 1)
-             gradient_val = [gradient_val colnorm];
+             gradient_norm_per_iter = [gradient_norm_per_iter colnorm];
         end
         % break if gradient has become 100 times smaller
-        if(gradient_val(1,iter)/gradient_val(1,1)<0.01) 
+        if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01) 
             break;
         end
     end % end for ifrom 1 to s
     
      % break if gradient has become 100 times smaller
-     if(gradient_val(1,iter)/gradient_val(1,1)<0.01)
+     if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01)
              break;
      end
 
@@ -180,7 +139,7 @@ for iter =1:num_iter
     for i =1:size(X_mat,1)
         W1 = W_T(:,i) - A_star(:,i);
         colnorm=sqrt(sum(W1.^2,1));
-        WAstar_diff_iter(i,iter) = colnorm;
+        WAstar_diff_per_iter(i,iter) = colnorm;
    end
 end % end num iter 
 
@@ -219,8 +178,9 @@ Y_diff_final_norm = (1/N_test)*Y_diff_final_norm;
 clear colnorm final_term fnorm g_i i i1 iter j k N num_iter q_i regularization_term_1   
 clear regularization_term_2 rownorm term12 term_1 term_2 term_aa term_ab term_CHY
 clear term_jh term_l1_1 term_l1_2 term_prod_ab term_wTY term_wy termjh_chy var_weight
-clear w1 W1 W_tilda 
+clear w1 W1 W_tilda C delta epsilon_i g_mat lambda1 lambda2 
 
+clear n h S mu_by_root_n A_star W_initial ball_distance W W_T
 % most important variables are Y_diff_final_norm WAstar_diff_iter gradient_val
 % Y_diff_final_bn_norm Y_diff_initial_norm
 save test.mat
