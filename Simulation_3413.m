@@ -123,13 +123,13 @@ for S = [4,6,9,12,15]
             end
 
             % break if gradient has become 100 times smaller
-            if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.0001) 
+            if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01) 
                 break;
             end
         end % end for ifrom 1 to s
 
          % break if gradient has become 100 times smaller
-         if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.0001)
+         if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01)
                  break;
          end
 
