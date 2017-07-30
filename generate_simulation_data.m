@@ -1,6 +1,6 @@
 % generating data for experiments with support =4
 clear; clc;
-h = 1024;
+h = 4096;
 n = 100;
 A_star = randn(n,h);
 for i =1:h
