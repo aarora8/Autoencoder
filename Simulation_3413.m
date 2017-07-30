@@ -180,6 +180,6 @@ for S = [4,6,9,12,15]
     clear W W_T Y_diff_initial Y_diff_norm var_x_star Num_datapoints N_test m_1 lambda_1 lambda_2 i2 gmat_val
 
     % most important variables are Y_diff_per_iter WAstar_diff_iter gradient_val_per_iter 
-    result = strcat('result_sparsity',int2str(S),'_',int2str(h),'.mat');
+    result = strcat('result_sparsity',int2str(S),'.mat');
     save (result,'eta','S', 'gradient_norm_per_iter','W_T_final','W_T_final_bn','WAstar_diff_per_iter','X_mat','X_test','Y_diff_norm_per_iter','Y_mat','Y_test'); 
 end 
