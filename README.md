@@ -1,5 +1,4 @@
-PaperID3413 - Critical Points Of An Autoencoder Can Provably Recover Sparsely Used Overcomplete Dictionaries
-
+Autoencoder
 - Datagen.m -> This code generates data for the  simulation.
 - simu5.m -> This code does the simulation.
 
