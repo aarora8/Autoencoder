@@ -12,7 +12,7 @@ for S = [4,6,9,12,15]
     X_mat = zeros(h,N);
     Y_test = zeros(n,N_test);
     X_test = zeros(h,N_test);
-    var_x_star = 1/(256*log(n));
+    var_x_star = 1/(256);
     for i = 1:Num_datapoints  
         x = zeros(h,1);
         x(1:S) = normrnd(m_1,var_x_star,[S 1]);
@@ -30,7 +30,7 @@ for S = [4,6,9,12,15]
     % system parameters
     h = size(X_mat,1) % hidden layer size, sparse code dimension, 256
 
-    eta = 0.007 % learning rate
+    eta = 0.03 % learning rate
     W = W_initial;
     W_T = W_T_initial;
     num_iter = 60 % number of iterations to run the simulation
@@ -123,13 +123,13 @@ for S = [4,6,9,12,15]
             end
 
             % break if gradient has become 100 times smaller
-            if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01) 
+            if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.0001) 
                 break;
             end
         end % end for ifrom 1 to s
 
          % break if gradient has become 100 times smaller
-         if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.01)
+         if(gradient_norm_per_iter(1,iter)/gradient_norm_per_iter(1,1)<0.0001)
                  break;
          end
 
