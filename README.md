@@ -12,7 +12,7 @@ To perform a simulation, first run Datagen.m code and then run simu5.m.
   Choose a p accordingly but a sligtly larger p than this should be okay. 
  - Create lots of sparse vectors (x^*) of dimension h with have h^p non-zero elements.
 - Create the corresponding y = A^*x^*. 
-- Now initialize the deep net matrix W of dimension h times n with each of its column say a distance 1 or 2 away from the corresponding columns of A^*^T. Call this the "initial W" 
+- Now initialize the deep net matrix W of dimension h times n with each of its column say a distance 1 or 2 away from the corresponding columns of A'*'T. Call this the "initial W" 
 -  Now sample a bunch of ys and use this W to estimate the gradient as per the 3 equations in the last appendix. 
    The full gradient is a sum of the 3 derivatives coming from each of the 3 parts of loss function L. 
   For each i = 1 to h you will get one matrix i.e the gradient along that direction.  
