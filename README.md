@@ -46,3 +46,10 @@ To perform a simulation, first run Datagen.m code and then run simu5.m.
 - cat Simulation_3413.m | matlab -nodesktop -nosplash
 - nohup matlab -nosplash -nodesktop -nojvm < Simulation_3413.m 1> logfile 2> err.out
 - https://github.com/aarora8/PaperID3413.git
+
+dir=exp/chain_fsf5_1/cnn_chainali_1a/decode_test
+lattice-scale --inv-acoustic-scale=12 "ark:gunzip -c $dir/lat.1.gz|" ark:- | \
+        lattice-1best ark:- ark:- | \
+        lattice-align-words data/lang_unk/phones/word_boundary.int exp/chain_fsf5_1/cnn_chainali_1a/final.mdl ark:- ark:- | \
+        lattice-arc-post exp/chain_fsf5_1/cnn_chainali_1a/final.mdl ark:- - | \
+        local/unk_ark_post_to_transcription.py data/lang_unk/phones.txt data/lang_unk/words.txt
